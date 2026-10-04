@@ -1,0 +1,2121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AURA — 于光影之间，见通透之美</title>
+<meta name="description" content="AURA 以磨砂玻璃般的质感语言，重塑数字界面的层次与呼吸感。简约，却经得起凝视。">
+<link rel="stylesheet" href="https://miaoda.feishu.cn/fonts/css2?family=Noto+Serif+SC:wght@600;700;900&family=Noto+Sans+SC:wght@300;400;500;700&family=Space+Grotesk:wght@400;500;600&display=swap">
+<style>
+/* ============================================================
+   AURA · 磨砂玻璃质感官网
+   设计 token
+============================================================ */
+:root{
+  --ink:#141826;
+  --ink-soft:#3E465C;
+  --muted:#747C93;
+  --hairline:rgba(20,24,38,.08);
+
+  --glass-bg:rgba(255,255,255,.44);
+  --glass-bg-strong:rgba(255,255,255,.58);
+  --glass-border:rgba(255,255,255,.72);
+  --glass-shadow:0 24px 60px -24px rgba(28,38,78,.28), 0 2px 10px -2px rgba(28,38,78,.08);
+
+  --blue:#A9C1FF;
+  --violet:#D2C0FB;
+  --peach:#FFC9B2;
+  --mint:#B3E3D2;
+
+  --radius:26px;
+  --serif:"Noto Serif SC","Songti SC","STSong",serif;
+  --sans:"Noto Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --grotesk:"Space Grotesk","Noto Sans SC",sans-serif;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:#E8ECF4;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+a{color:inherit;text-decoration:none;}
+ul{list-style:none;}
+section{scroll-margin-top:110px;}
+::selection{background:rgba(20,24,38,.85);color:#fff;}
+
+.container{max-width:1200px;margin:0 auto;padding:0 32px;}
+
+/* ============================================================
+   环境背景：流动彩色光斑 + 细噪点
+============================================================ */
+.bg{position:fixed;inset:0;z-index:-2;overflow:hidden;
+  background:linear-gradient(180deg,#EEF1F8 0%,#E6EAF3 55%,#E3E8F2 100%);}
+.blob{position:absolute;border-radius:50%;filter:blur(80px);will-change:transform;opacity:.75;}
+.blob-1{width:52vw;height:52vw;top:-18vw;left:-12vw;
+  background:radial-gradient(circle at 50% 50%,var(--blue),rgba(169,193,255,0) 68%);
+  animation:drift1 28s ease-in-out infinite;}
+.blob-2{width:46vw;height:46vw;top:-8vw;right:-14vw;
+  background:radial-gradient(circle at 50% 50%,var(--violet),rgba(210,192,251,0) 68%);
+  animation:drift2 32s ease-in-out infinite;}
+.blob-3{width:44vw;height:44vw;bottom:-16vw;left:8vw;
+  background:radial-gradient(circle at 50% 50%,var(--peach),rgba(255,201,178,0) 68%);
+  animation:drift3 36s ease-in-out infinite;}
+.blob-4{width:40vw;height:40vw;bottom:-10vw;right:6vw;
+  background:radial-gradient(circle at 50% 50%,var(--mint),rgba(179,227,210,0) 68%);
+  animation:drift1 30s ease-in-out infinite reverse;}
+@keyframes drift1{
+  0%,100%{transform:translate(0,0) scale(1);}
+  50%{transform:translate(6vw,4vw) scale(1.12);}
+}
+@keyframes drift2{
+  0%,100%{transform:translate(0,0) scale(1.05);}
+  50%{transform:translate(-5vw,6vw) scale(.95);}
+}
+@keyframes drift3{
+  0%,100%{transform:translate(0,0) scale(1);}
+  50%{transform:translate(5vw,-5vw) scale(1.1);}
+}
+.grain{position:absolute;inset:0;z-index:1;opacity:.05;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+
+/* ============================================================
+   玻璃基类
+============================================================ */
+.glass{
+  position:relative;
+  background:var(--glass-bg);
+  backdrop-filter:blur(22px) saturate(170%);
+  -webkit-backdrop-filter:blur(22px) saturate(170%);
+  border:1px solid var(--glass-border);
+  box-shadow:var(--glass-shadow);
+}
+.glass::before{
+  content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:linear-gradient(155deg,rgba(255,255,255,.6),rgba(255,255,255,0) 42%);
+}
+.card-inner{position:relative;z-index:1;}
+
+/* ============================================================
+   导航
+============================================================ */
+.nav-wrap{position:fixed;top:20px;left:0;right:0;z-index:100;display:flex;justify-content:center;padding:0 24px;}
+.nav{
+  width:100%;max-width:1080px;border-radius:999px;
+  display:flex;align-items:center;gap:36px;
+  padding:11px 12px 11px 24px;
+  background:rgba(255,255,255,.28);
+  transition:background .4s ease,box-shadow .4s ease;
+}
+.nav.scrolled{background:rgba(255,255,255,.62);box-shadow:0 16px 40px -20px rgba(28,38,78,.3);}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--grotesk);font-weight:600;font-size:19px;letter-spacing:.14em;}
+.brand svg{width:28px;height:28px;}
+.nav-links{display:flex;gap:30px;margin-left:auto;}
+.nav-links a{font-size:14.5px;color:var(--ink-soft);font-weight:400;position:relative;padding:6px 2px;transition:color .25s;}
+.nav-links a::after{content:"";position:absolute;left:2px;right:2px;bottom:0;height:1px;background:var(--ink);transform:scaleX(0);transform-origin:left;transition:transform .3s ease;}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a:hover::after{transform:scaleX(1);}
+.nav-actions{display:flex;align-items:center;gap:10px;}
+
+/* ============================================================
+   按钮
+============================================================ */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:13px 26px;border-radius:999px;font-size:15px;font-weight:500;
+  cursor:pointer;white-space:nowrap;border:1px solid transparent;
+  transition:transform .3s cubic-bezier(.2,.7,.2,1),box-shadow .3s,background .3s;}
+.btn-dark{background:var(--ink);color:#fff;box-shadow:0 12px 28px -12px rgba(20,24,38,.65);}
+.btn-dark:hover{transform:translateY(-2px);box-shadow:0 18px 34px -12px rgba(20,24,38,.7);}
+.btn-sm{padding:10px 20px;font-size:14px;}
+.btn-glass{background:rgba(255,255,255,.5);border-color:rgba(255,255,255,.85);color:var(--ink);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.btn-glass:hover{transform:translateY(-2px);background:rgba(255,255,255,.72);}
+.btn-ghost{color:var(--ink-soft);padding:10px 14px;}
+.btn-ghost:hover{color:var(--ink);}
+
+/* ============================================================
+   Hero
+============================================================ */
+.hero{max-width:1200px;margin:0 auto;padding:176px 32px 90px;
+  display:grid;grid-template-columns:1.04fr .96fr;gap:56px;align-items:center;
+  --mx:0;--my:0;}
+.eyebrow{display:inline-flex;align-items:center;gap:12px;
+  font-family:var(--grotesk);font-size:12px;letter-spacing:.32em;text-transform:uppercase;color:var(--muted);}
+.eyebrow::before{content:"";width:26px;height:1px;background:currentColor;}
+.hero-title{font-family:var(--serif);font-weight:900;
+  font-size:clamp(42px,5.6vw,72px);line-height:1.14;letter-spacing:-.01em;margin:24px 0 26px;}
+.hero-title em{font-style:normal;position:relative;white-space:nowrap;}
+.hero-title em::after{content:"";position:absolute;left:0;right:0;bottom:.08em;height:.34em;z-index:-1;
+  background:linear-gradient(90deg,rgba(169,193,255,.75),rgba(255,201,178,.7));
+  border-radius:4px;}
+.hero-sub{font-size:17.5px;color:var(--ink-soft);max-width:480px;font-weight:300;line-height:1.85;}
+.hero-actions{display:flex;gap:14px;margin-top:38px;flex-wrap:wrap;}
+.hero-meta{display:flex;gap:28px;margin-top:46px;flex-wrap:wrap;}
+.hero-meta .m{display:flex;flex-direction:column;}
+.hero-meta .m b{font-family:var(--grotesk);font-size:24px;font-weight:600;letter-spacing:-.01em;}
+.hero-meta .m span{font-size:13px;color:var(--muted);margin-top:2px;}
+
+/* Hero 视觉：玻璃面板层叠 + 鼠标视差 */
+.hero-visual{position:relative;height:540px;}
+.panel{position:absolute;border-radius:var(--radius);
+  transition:transform .7s cubic-bezier(.2,.7,.2,1);}
+.panel-main{top:46px;left:12px;right:28px;bottom:42px;padding:24px;
+  transform:translate3d(calc(var(--mx)*12px),calc(var(--my)*12px),0);}
+.panel-top{display:flex;align-items:center;gap:12px;}
+.dots{display:flex;gap:6px;}
+.dots span{width:9px;height:9px;border-radius:50%;background:rgba(20,24,38,.18);}
+.dots span:first-child{background:rgba(255,140,120,.7);}
+.panel-title{font-size:12.5px;color:var(--muted);letter-spacing:.06em;}
+.panel-chips{display:flex;gap:8px;margin:18px 0 8px;}
+.chip{font-size:11.5px;padding:5px 12px;border-radius:999px;background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);color:var(--ink-soft);}
+.panel-metric{display:flex;align-items:flex-end;justify-content:space-between;margin:14px 2px 6px;}
+.metric-value{font-family:var(--grotesk);font-size:40px;font-weight:600;letter-spacing:-.02em;line-height:1;}
+.metric-label{font-size:12.5px;color:var(--muted);margin-top:7px;}
+.trend{font-family:var(--grotesk);font-size:12.5px;color:#1E9E73;background:rgba(179,227,210,.55);
+  padding:5px 11px;border-radius:999px;border:1px solid rgba(255,255,255,.8);}
+.spark{width:100%;height:auto;margin-top:6px;display:block;}
+.panel-foot{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:14px;}
+.mini{display:flex;align-items:center;gap:10px;}
+.mini-label{font-size:11.5px;color:var(--muted);white-space:nowrap;}
+.mini-bar{flex:1;height:5px;border-radius:99px;background:rgba(20,24,38,.1);overflow:hidden;}
+.mini-bar i{display:block;height:100%;width:var(--w);border-radius:99px;
+  background:linear-gradient(90deg,#8FA8F5,#C4B3F7);}
+
+.float-a{top:0;left:0;padding:15px 20px;z-index:3;
+  transform:translate3d(calc(var(--mx)*24px),calc(var(--my)*24px),0);}
+.float-b{bottom:0;right:6px;padding:15px 20px;z-index:3;
+  transform:translate3d(calc(var(--mx)*-8px),calc(var(--my)*-8px),0);}
+.float-row{display:flex;align-items:center;gap:12px;}
+.live-dot{width:9px;height:9px;border-radius:50%;background:#2EBD8C;box-shadow:0 0 0 4px rgba(46,189,140,.18);}
+.float-row strong{display:block;font-family:var(--grotesk);font-size:17px;font-weight:600;line-height:1.2;}
+.float-row span{font-size:12px;color:var(--muted);}
+.float-row svg{width:26px;height:26px;color:var(--ink);}
+
+/* ============================================================
+   信任条
+============================================================ */
+.trust{padding:14px 0 56px;}
+.trust-inner{border-top:1px solid var(--hairline);border-bottom:1px solid var(--hairline);
+  padding:26px 10px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;}
+.trust-label{font-size:13px;color:var(--muted);white-space:nowrap;}
+.trust-logos{display:flex;gap:38px;flex-wrap:wrap;align-items:center;}
+.trust-logos span{font-family:var(--grotesk);font-size:17px;font-weight:600;letter-spacing:.16em;color:var(--ink);opacity:.42;
+  transition:opacity .3s;}
+.trust-logos span:hover{opacity:.85;}
+.trust-logos .zh{font-family:var(--serif);letter-spacing:.3em;}
+
+/* ============================================================
+   通用 section 头部
+============================================================ */
+.section{padding:96px 0;}
+.section-head{max-width:640px;margin-bottom:56px;}
+.section-head.center{margin-left:auto;margin-right:auto;text-align:center;}
+.section-head.center .eyebrow{justify-content:center;}
+.section-title{font-family:var(--serif);font-weight:700;font-size:clamp(30px,3.6vw,44px);
+  line-height:1.25;letter-spacing:-.01em;margin:18px 0 16px;}
+.section-sub{font-size:16px;color:var(--ink-soft);font-weight:300;line-height:1.85;}
+
+/* ============================================================
+   Features
+============================================================ */
+.features-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;}
+.feature{border-radius:var(--radius);padding:30px 26px;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s,background .4s;}
+.feature:hover{transform:translateY(-7px);background:var(--glass-bg-strong);
+  box-shadow:0 34px 70px -26px rgba(28,38,78,.34);}
+.feature-icon{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);margin-bottom:22px;color:var(--ink);}
+.feature-icon svg{width:24px;height:24px;}
+.feature h3{font-size:18px;font-weight:500;margin-bottom:10px;letter-spacing:.01em;}
+.feature p{font-size:14px;color:var(--muted);font-weight:300;line-height:1.8;}
+
+/* ============================================================
+   Showcase（浅色）
+============================================================ */
+.showcase{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;}
+.showcase-img{border-radius:30px;padding:14px;}
+.showcase-img img{display:block;width:100%;border-radius:20px;}
+.showcase-eyebrow{margin-bottom:6px;}
+.check-list{display:flex;flex-direction:column;gap:16px;margin:30px 0 36px;}
+.check{display:flex;gap:13px;align-items:flex-start;font-size:15px;color:var(--ink-soft);}
+.check svg{flex-shrink:0;width:21px;height:21px;margin-top:2px;color:#2E9E7A;}
+.check b{color:var(--ink);font-weight:500;}
+
+/* ============================================================
+   Showcase（深色段）
+============================================================ */
+.dark-section{position:relative;background:#0C0F16;overflow:hidden;
+  border-radius:0;padding:110px 0;margin:40px 0 0;}
+.dark-bg{position:absolute;inset:0;z-index:0;overflow:hidden;}
+.dblob{position:absolute;border-radius:50%;filter:blur(110px);}
+.dblob-1{width:42vw;height:42vw;top:-14vw;left:-8vw;background:radial-gradient(circle,rgba(72,148,196,.5),transparent 68%);animation:drift2 34s ease-in-out infinite;}
+.dblob-2{width:38vw;height:38vw;bottom:-14vw;right:-6vw;background:radial-gradient(circle,rgba(242,178,110,.34),transparent 68%);animation:drift3 38s ease-in-out infinite;}
+.dblob-3{width:30vw;height:30vw;top:10%;right:18%;background:radial-gradient(circle,rgba(90,200,170,.3),transparent 68%);animation:drift1 30s ease-in-out infinite;}
+.dark-section .container{position:relative;z-index:1;}
+.dark-section .showcase{gap:64px;}
+.dark-section .eyebrow{color:#8E97AC;}
+.dark-section .section-title{color:#F5F7FC;}
+.dark-section .section-sub{color:#9AA3B8;}
+.dark-section .check{color:#9AA3B8;}
+.dark-section .check b{color:#F5F7FC;}
+.dark-section .check svg{color:#5CC9A8;}
+.dark-section .showcase-img{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  box-shadow:0 30px 80px -30px rgba(0,0,0,.7);}
+.btn-light{background:#F3F5FA;color:#141826;}
+.btn-light:hover{transform:translateY(-2px);background:#fff;}
+.btn-outline-light{background:transparent;border-color:rgba(255,255,255,.28);color:#E8ECF5;}
+.btn-outline-light:hover{background:rgba(255,255,255,.08);transform:translateY(-2px);}
+
+/* ============================================================
+   Stats
+============================================================ */
+.stats-band{border-radius:30px;padding:46px 40px;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;}
+.stat{text-align:center;position:relative;}
+.stat + .stat::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:1px;background:rgba(20,24,38,.1);}
+.stat-num{font-family:var(--grotesk);font-weight:600;font-size:clamp(34px,4vw,48px);letter-spacing:-.02em;line-height:1;}
+.stat-label{font-size:13.5px;color:var(--muted);margin-top:12px;}
+
+/* ============================================================
+   Testimonials
+============================================================ */
+.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.testi{border-radius:var(--radius);padding:32px 28px;display:flex;flex-direction:column;
+  transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s;}
+.testi:hover{transform:translateY(-6px);box-shadow:0 32px 66px -26px rgba(28,38,78,.32);}
+.testi-quote{font-family:var(--serif);font-size:44px;line-height:1;color:rgba(20,24,38,.22);margin-bottom:10px;}
+.testi p{font-size:14.5px;color:var(--ink-soft);font-weight:300;line-height:1.85;flex:1;}
+.testi-author{display:flex;align-items:center;gap:13px;margin-top:24px;padding-top:22px;border-top:1px solid var(--hairline);}
+.avatar{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--grotesk);font-size:15px;font-weight:600;color:#fff;flex-shrink:0;}
+.av-1{background:linear-gradient(135deg,#8FA8F5,#C4B3F7);}
+.av-2{background:linear-gradient(135deg,#F2B28E,#F5D08A);}
+.av-3{background:linear-gradient(135deg,#7CC9B2,#9CCFE8);}
+.testi-author b{display:block;font-size:14.5px;font-weight:500;}
+.testi-author span{font-size:12.5px;color:var(--muted);}
+
+/* ============================================================
+   CTA
+============================================================ */
+.cta-section{padding:96px 0 110px;}
+.cta-panel{border-radius:34px;padding:84px 40px;text-align:center;overflow:hidden;}
+.cta-blob{position:absolute;border-radius:50%;filter:blur(70px);z-index:0;}
+.cta-blob-1{width:340px;height:340px;top:-130px;left:-80px;background:radial-gradient(circle,var(--blue),transparent 70%);opacity:.7;animation:drift1 26s ease-in-out infinite;}
+.cta-blob-2{width:320px;height:320px;bottom:-140px;right:-70px;background:radial-gradient(circle,var(--peach),transparent 70%);opacity:.7;animation:drift3 30s ease-in-out infinite;}
+.cta-panel .card-inner{position:relative;z-index:1;max-width:620px;margin:0 auto;}
+.cta-panel h2{font-family:var(--serif);font-weight:700;font-size:clamp(30px,4vw,46px);line-height:1.25;margin:18px 0 16px;}
+.cta-panel p{font-size:16px;color:var(--ink-soft);font-weight:300;line-height:1.8;}
+.cta-actions{display:flex;gap:14px;justify-content:center;margin-top:36px;flex-wrap:wrap;}
+.cta-note{display:block;margin-top:22px;font-size:13px;color:var(--muted);}
+
+/* ============================================================
+   Footer
+============================================================ */
+.footer{background:#0C0F16;color:#8E97AC;padding:74px 0 34px;position:relative;}
+.footer-grid{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:40px;}
+.footer .brand{color:#F3F5FA;margin-bottom:18px;}
+.footer-tag{font-size:13.5px;font-weight:300;line-height:1.8;max-width:280px;}
+.footer h4{color:#DDE2EE;font-size:14px;font-weight:500;margin-bottom:18px;letter-spacing:.04em;}
+.footer li{margin-bottom:12px;}
+.footer li a{font-size:13.5px;font-weight:300;transition:color .25s;}
+.footer li a:hover{color:#F3F5FA;}
+.footer-bottom{margin-top:58px;padding-top:26px;border-top:1px solid rgba(255,255,255,.08);
+  display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px;}
+.footer-bottom .links{display:flex;gap:24px;}
+
+/* ============================================================
+   滚动揭示
+============================================================ */
+.reveal{opacity:0;transform:translateY(30px);
+  transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);
+  transition-delay:var(--d,0s);}
+.reveal.in{opacity:1;transform:none;}
+
+/* ============================================================
+   响应式
+============================================================ */
+@media (max-width:1024px){
+  .hero{grid-template-columns:1fr;gap:40px;padding-top:150px;}
+  .hero-visual{height:480px;max-width:560px;width:100%;}
+  .features-grid{grid-template-columns:repeat(2,1fr);}
+  .showcase{grid-template-columns:1fr;gap:40px;}
+  .dark-section .showcase-img{order:0;}
+  .testi-grid{grid-template-columns:1fr;max-width:600px;}
+  .footer-grid{grid-template-columns:1fr 1fr;gap:36px;}
+}
+@media (max-width:760px){
+  .container{padding:0 20px;}
+  .nav{gap:14px;padding:10px 12px 10px 18px;}
+  .nav-links{display:none;}
+  .nav-actions .btn-ghost{display:none;}
+  .hero{padding:132px 20px 70px;}
+  .hero-visual{height:420px;}
+  .panel-main{left:4px;right:12px;}
+  .section{padding:74px 0;}
+  .dark-section{padding:80px 0;}
+  .features-grid{grid-template-columns:1fr;}
+  .stats-band{grid-template-columns:1fr 1fr;gap:32px 20px;padding:38px 26px;}
+  .stat:nth-child(3)::before{display:none;}
+  .stat + .stat::before{display:none;}
+  .stat:nth-child(even)::before{content:"";position:absolute;left:0;top:14%;bottom:14%;width:1px;background:rgba(20,24,38,.1);}
+  .trust-logos{gap:22px;}
+  .footer-grid{grid-template-columns:1fr;gap:32px;}
+  .cta-panel{padding:64px 26px;}
+}
+
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;
+    transition-duration:.01ms!important;}
+  .reveal{opacity:1;transform:none;}
+  html{scroll-behavior:auto;}
+}
+
+/* ============================================================
+   登录 / 注册
+============================================================ */
+.auth-overlay{position:fixed;inset:0;z-index:200;display:flex;overflow-y:visible;
+  padding:28px 20px;opacity:0;visibility:hidden;
+  transition:opacity .4s ease,visibility .4s,padding .01s .4s;
+  background:rgba(228,232,242,.4);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);}
+.auth-overlay.open{opacity:1;visibility:visible;transition:opacity .4s,visibility 0s;overflow-y:auto;}
+.auth-card{position:relative;width:100%;max-width:448px;margin:auto;
+  border-radius:30px;padding:40px 40px 34px;
+  transform:translateY(26px) scale(.97);
+  transition:transform .5s cubic-bezier(.2,.8,.2,1);}
+.auth-overlay.open .auth-card{transform:none;}
+.auth-close{position:absolute;top:16px;right:16px;z-index:3;width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;color:var(--ink-soft);
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.9);cursor:pointer;
+  transition:transform .35s,background .3s;}
+.auth-close:hover{transform:rotate(90deg);background:rgba(255,255,255,.82);}
+.auth-close svg{width:17px;height:17px;}
+.auth-brand{display:flex;flex-direction:column;align-items:center;gap:14px;margin-bottom:8px;}
+.auth-brand .brand{font-size:21px;}
+.auth-brand .brand svg{width:31px;height:31px;}
+.auth-title{font-family:var(--serif);font-size:23px;font-weight:700;text-align:center;line-height:1.3;}
+.auth-sub{font-size:13.5px;color:var(--muted);text-align:center;margin-top:6px;font-weight:300;}
+.auth-overlay[data-tab="login"] .title-register,
+.auth-overlay[data-tab="login"] .sub-register,
+.auth-overlay[data-tab="register"] .title-login,
+.auth-overlay[data-tab="register"] .sub-login{display:none;}
+
+/* tabs */
+.auth-tabs{position:relative;display:grid;grid-template-columns:1fr 1fr;
+  background:rgba(20,24,38,.07);border-radius:999px;padding:5px;margin:24px 0 26px;}
+.auth-tab-ind{position:absolute;top:5px;bottom:5px;left:5px;width:calc(50% - 5px);
+  background:#fff;border-radius:999px;box-shadow:0 6px 16px -6px rgba(28,38,78,.32);
+  transition:transform .42s cubic-bezier(.2,.8,.2,1);}
+.auth-overlay[data-tab="register"] .auth-tab-ind{transform:translateX(100%);}
+.auth-tab{position:relative;z-index:1;background:none;border:none;cursor:pointer;
+  font-family:var(--sans);font-size:14.5px;font-weight:500;color:var(--muted);padding:9px 0;
+  transition:color .3s;border-radius:999px;}
+.auth-overlay[data-tab="login"] .auth-tab-login,
+.auth-overlay[data-tab="register"] .auth-tab-register{color:var(--ink);}
+
+/* forms */
+.auth-form{display:none;flex-direction:column;gap:16px;}
+.auth-overlay[data-tab="login"] .form-login{display:flex;}
+.auth-overlay[data-tab="register"] .form-register{display:flex;}
+.field{position:relative;}
+.field-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--muted);
+  pointer-events:none;display:flex;}
+.field-icon svg{width:19px;height:19px;}
+.field input{width:100%;height:52px;border-radius:15px;padding:0 48px 0 47px;
+  font-family:var(--sans);font-size:14.5px;color:var(--ink);
+  background:rgba(255,255,255,.56);border:1px solid rgba(255,255,255,.92);
+  transition:border-color .25s,box-shadow .25s,background .25s;}
+.field input::placeholder{color:#9AA1B2;}
+.field input:focus{outline:none;border-color:rgba(20,24,38,.5);background:rgba(255,255,255,.8);
+  box-shadow:0 0 0 4px rgba(20,24,38,.07);}
+.field.has-error input{border-color:rgba(220,80,80,.62);background:rgba(255,237,237,.62);}
+.field-error{display:none;font-size:12.5px;color:#D04A4A;margin:7px 4px 0;}
+.field.has-error .field-error{display:block;}
+.pw-toggle{position:absolute;right:9px;top:50%;transform:translateY(-50%);
+  width:34px;height:34px;border:none;background:none;cursor:pointer;color:var(--muted);
+  display:flex;align-items:center;justify-content:center;border-radius:9px;}
+.pw-toggle:hover{color:var(--ink);}
+.pw-toggle svg{width:19px;height:19px;}
+.pw-toggle .eye-off{display:none;}
+.pw-toggle.show .eye{display:none;}
+.pw-toggle.show .eye-off{display:block;}
+
+/* 密码强度 */
+.pw-strength{display:none;gap:10px;align-items:center;margin:-5px 4px 0;}
+.pw-strength.on{display:flex;}
+.pw-bars{display:flex;gap:5px;flex:1;}
+.pw-bars i{height:5px;flex:1;border-radius:99px;background:rgba(20,24,38,.12);transition:background .3s;}
+.pw-strength[data-s="1"] .pw-bars i:nth-child(-n+1){background:#E5806F;}
+.pw-strength[data-s="2"] .pw-bars i:nth-child(-n+2){background:#E8B45C;}
+.pw-strength[data-s="3"] .pw-bars i{background:#3FAE83;}
+.pw-text{font-size:12px;color:var(--muted);min-width:22px;text-align:right;}
+
+/* 记住我 / 链接行 */
+.form-row{display:flex;align-items:center;justify-content:space-between;font-size:13.5px;gap:12px;}
+.remember{display:flex;align-items:center;gap:9px;cursor:pointer;color:var(--ink-soft);
+  user-select:none;font-size:13.5px;}
+.remember input{position:absolute;opacity:0;width:0;height:0;}
+.cbox{width:19px;height:19px;border-radius:6px;background:rgba(255,255,255,.6);
+  border:1px solid rgba(20,24,38,.25);display:flex;align-items:center;justify-content:center;
+  transition:background .2s,border-color .2s;flex-shrink:0;}
+.cbox svg{width:12px;height:12px;color:#fff;opacity:0;transform:scale(.5);transition:all .2s;}
+.remember input:checked + .cbox{background:var(--ink);border-color:var(--ink);}
+.remember input:checked + .cbox svg{opacity:1;transform:scale(1);}
+.remember input:focus-visible + .cbox{box-shadow:0 0 0 4px rgba(20,24,38,.12);}
+.link-quiet{color:var(--ink);font-size:13.5px;cursor:pointer;}
+.link-quiet:hover{text-decoration:underline;}
+
+.btn-block{width:100%;padding:15px;font-size:15.5px;margin-top:2px;}
+.auth-divider{display:flex;align-items:center;gap:14px;color:var(--muted);font-size:12.5px;margin:2px 0;}
+.auth-divider::before,.auth-divider::after{content:"";flex:1;height:1px;background:rgba(20,24,38,.1);}
+.social-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.social-btn{display:flex;align-items:center;justify-content:center;gap:9px;height:48px;border-radius:14px;
+  background:rgba(255,255,255,.55);border:1px solid rgba(255,255,255,.92);cursor:pointer;
+  font-family:var(--sans);font-size:13.5px;color:var(--ink-soft);
+  transition:background .25s,transform .25s;}
+.social-btn:hover{background:rgba(255,255,255,.82);transform:translateY(-2px);}
+.social-btn svg{width:19px;height:19px;}
+.auth-switch{text-align:center;font-size:13.5px;color:var(--muted);margin-top:6px;}
+.auth-switch button{border:none;background:none;color:var(--ink);font-family:var(--sans);
+  font-size:13.5px;cursor:pointer;padding:0;}
+.auth-switch button:hover{text-decoration:underline;}
+
+/* 登录后导航 */
+.nav-user{display:none;align-items:center;gap:10px;}
+.nav-user.in{display:flex;}
+.nav-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:var(--grotesk);font-size:14px;font-weight:600;color:#fff;
+  background:linear-gradient(135deg,#8FA8F5,#C4B3F7);flex-shrink:0;}
+.nav-user-name{font-size:14px;font-weight:500;max-width:96px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.nav-logout{background:rgba(255,255,255,.5);border:1px solid rgba(255,255,255,.85);
+  border-radius:999px;padding:9px 15px;font-family:var(--sans);font-size:13px;cursor:pointer;
+  color:var(--ink-soft);transition:background .25s,color .25s;}
+.nav-logout:hover{background:rgba(255,255,255,.82);color:var(--ink);}
+
+/* toast */
+.toast-wrap{position:fixed;top:86px;left:50%;transform:translateX(-50%);z-index:300;
+  display:flex;flex-direction:column;gap:10px;align-items:center;pointer-events:none;width:max-content;max-width:92vw;}
+.toast{display:flex;align-items:center;gap:10px;padding:13px 22px;border-radius:999px;
+  font-size:14px;color:#fff;background:rgba(20,24,38,.88);
+  box-shadow:0 18px 40px -14px rgba(20,24,38,.55);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;transform:translateY(-14px);transition:opacity .35s,transform .35s;}
+.toast.show{opacity:1;transform:none;}
+.toast.ok{background:rgba(28,96,74,.93);}
+.toast svg{width:17px;height:17px;flex-shrink:0;}
+
+@media (max-width:480px){
+  .auth-card{padding:34px 23px 28px;border-radius:26px;}
+}
+@media (max-width:760px){
+  .nav-user-name{display:none;}
+}
+
+/* ============================================================
+   个人主页（登录后）
+============================================================ */
+.clickable{cursor:pointer;}
+.profile-view{position:fixed;inset:0;z-index:40;visibility:hidden;opacity:0;overflow-y:hidden;
+  background:rgba(228,232,242,.62);
+  backdrop-filter:blur(20px) saturate(120%);-webkit-backdrop-filter:blur(20px) saturate(120%);
+  transition:opacity .45s ease,visibility .45s;}
+.profile-view.open{visibility:visible;opacity:1;overflow-y:auto;}
+.profile-shell{padding:112px 0 72px;min-height:100%;}
+
+/* 入场 */
+.p-hero,.p-stat,.p-card{opacity:0;transform:translateY(22px);}
+.profile-view.open .p-hero,.profile-view.open .p-stat,.profile-view.open .p-card{
+  animation:cardIn .7s cubic-bezier(.2,.75,.2,1) forwards;}
+.profile-view.open .p-stat:nth-child(1){animation-delay:.05s;}
+.profile-view.open .p-stat:nth-child(2){animation-delay:.11s;}
+.profile-view.open .p-stat:nth-child(3){animation-delay:.17s;}
+.profile-view.open .p-stat:nth-child(4){animation-delay:.23s;}
+@keyframes cardIn{to{opacity:1;transform:none;}}
+
+/* 欢迎横幅 */
+.p-hero{position:relative;border-radius:30px;padding:38px 40px;overflow:hidden;
+  display:flex;align-items:center;gap:30px;}
+.p-hero-blob{position:absolute;border-radius:50%;filter:blur(70px);z-index:0;}
+.p-hero-blob-1{width:300px;height:300px;top:-120px;right:8%;
+  background:radial-gradient(circle,var(--blue),transparent 70%);opacity:.65;}
+.p-hero-blob-2{width:260px;height:260px;bottom:-130px;left:30%;
+  background:radial-gradient(circle,var(--peach),transparent 70%);opacity:.55;}
+.p-hero>*{position:relative;z-index:1;}
+.p-avatar{width:92px;height:92px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--grotesk);font-size:34px;font-weight:600;color:#fff;
+  box-shadow:0 16px 34px -14px rgba(28,38,78,.5),inset 0 1px 2px rgba(255,255,255,.5);}
+.p-id{flex:1;min-width:0;}
+.p-name-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap;}
+.p-name-row h2{font-family:var(--serif);font-size:clamp(24px,3vw,32px);font-weight:700;letter-spacing:0;}
+.p-pro-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;
+  padding:5px 12px;border-radius:999px;color:#fff;background:linear-gradient(135deg,#262B3D,#3A415C);
+  box-shadow:0 8px 18px -8px rgba(20,24,38,.6);}
+.p-pro-badge svg{width:13px;height:13px;color:#F2C879;}
+.p-bio{font-size:14.5px;color:var(--ink-soft);font-weight:300;margin:10px 0 16px;line-height:1.75;}
+.p-meta{display:flex;gap:22px;flex-wrap:wrap;}
+.p-meta span{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:var(--muted);}
+.p-meta b{font-weight:500;color:var(--ink-soft);}
+.p-meta svg{width:15px;height:15px;}
+.p-hero-actions{flex-shrink:0;display:flex;flex-direction:column;gap:10px;}
+
+/* 编辑态 */
+.p-edit{display:none;width:100%;flex-direction:column;gap:18px;}
+.p-edit.on{display:flex;}
+.p-edit-row{display:flex;gap:18px;flex-wrap:wrap;}
+.p-edit-field{flex:1;min-width:200px;display:flex;flex-direction:column;gap:8px;}
+.p-edit-field label{font-size:13px;color:var(--muted);}
+.p-edit-field input,.p-edit-field textarea{font-family:var(--sans);font-size:14px;color:var(--ink);
+  border-radius:13px;padding:12px 15px;border:1px solid rgba(20,24,38,.16);
+  background:rgba(255,255,255,.66);resize:vertical;}
+.p-edit-field input:focus,.p-edit-field textarea:focus{outline:none;
+  border-color:rgba(20,24,38,.5);box-shadow:0 0 0 4px rgba(20,24,38,.07);}
+.p-colorpick{display:flex;gap:11px;align-items:center;flex-wrap:wrap;}
+.p-colorpick i{width:36px;height:36px;border-radius:50%;cursor:pointer;
+  border:2px solid transparent;transition:transform .2s,border-color .2s;}
+.p-colorpick i:hover{transform:scale(1.1);}
+.p-colorpick i.sel{border-color:var(--ink);transform:scale(1.1);}
+.p-edit-actions{display:flex;gap:12px;}
+
+/* 统计概览 */
+.p-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:22px;}
+.p-stat{border-radius:22px;padding:24px;display:flex;flex-direction:column;gap:12px;
+  transition:transform .35s,box-shadow .35s;}
+.p-stat:hover{transform:translateY(-5px);box-shadow:0 30px 60px -26px rgba(28,38,78,.34);}
+.p-stat-top{display:flex;align-items:center;justify-content:space-between;}
+.p-stat-ic{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.62);border:1px solid rgba(255,255,255,.9);color:var(--ink);}
+.p-stat-ic svg{width:20px;height:20px;}
+.p-stat-trend{font-family:var(--grotesk);font-size:11.5px;color:#1E9E73;}
+.p-stat-num{font-family:var(--grotesk);font-size:30px;font-weight:600;letter-spacing:-.02em;line-height:1;}
+.p-stat-label{font-size:13px;color:var(--muted);}
+
+/* 主内容 */
+.p-main{display:grid;grid-template-columns:1.85fr 1fr;gap:20px;margin-top:20px;align-items:start;}
+.p-col-left,.p-col-right{display:flex;flex-direction:column;gap:20px;min-width:0;}
+.p-card{border-radius:24px;padding:26px;}
+.p-card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;}
+.p-card-head h3{font-size:17px;font-weight:500;}
+.p-card-tag{font-size:11.5px;color:var(--muted);padding:5px 12px;border-radius:999px;
+  background:rgba(255,255,255,.6);border:1px solid rgba(255,255,255,.9);}
+
+/* 活跃度柱状 */
+.activity{display:flex;align-items:flex-end;gap:14px;height:150px;padding:0 4px;}
+.act-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:9px;height:100%;justify-content:flex-end;}
+.act-bar{width:100%;max-width:30px;border-radius:8px 8px 4px 4px;
+  background:linear-gradient(180deg,#9AAEF5,#C4B3F7);
+  transform-origin:bottom;}
+.profile-view.open .act-bar{animation:growUp .9s cubic-bezier(.2,.8,.2,1) both;animation-delay:.35s;}
+@keyframes growUp{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+.act-day{font-size:11.5px;color:var(--muted);}
+
+/* 作品列表 */
+.work-list{display:flex;flex-direction:column;}
+.work{display:flex;align-items:center;gap:15px;padding:14px 10px;border-radius:15px;cursor:pointer;
+  transition:background .25s;}
+.work+.work{border-top:1px solid var(--hairline);}
+.work:hover{background:rgba(255,255,255,.5);}
+.work-thumb{width:48px;height:48px;border-radius:13px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;color:#fff;}
+.work-thumb svg{width:21px;height:21px;}
+.wt-1{background:linear-gradient(135deg,#8FA8F5,#C4B3F7);}
+.wt-2{background:linear-gradient(135deg,#7CC9B2,#9CCFE8);}
+.wt-3{background:linear-gradient(135deg,#F2B28E,#F5D08A);}
+.wt-4{background:linear-gradient(135deg,#F29AA7,#F5C0A0);}
+.work-info{flex:1;min-width:0;}
+.work-info b{display:block;font-size:14.5px;font-weight:500;}
+.work-info span{font-size:12.5px;color:var(--muted);}
+.work-status{font-size:11.5px;padding:5px 11px;border-radius:999px;}
+.ws-pub{color:#1E8A66;background:rgba(179,227,210,.55);}
+.ws-draft{color:#747C93;background:rgba(20,24,38,.07);}
+.ws-audit{color:#B5802A;background:rgba(245,208,138,.4);}
+.work-time{font-size:12px;color:var(--muted);width:74px;text-align:right;}
+
+/* 账号信息行 */
+.info-row{display:flex;justify-content:space-between;align-items:center;padding:13px 2px;font-size:13.5px;}
+.info-row+.info-row{border-top:1px solid var(--hairline);}
+.info-row span{color:var(--muted);}
+.info-row b{font-weight:500;color:var(--ink-soft);max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* 快捷入口 */
+.qk-row{display:flex;align-items:center;gap:13px;padding:13px 8px;border-radius:13px;cursor:pointer;
+  transition:background .25s;}
+.qk-row+.qk-row{border-top:1px solid var(--hairline);}
+.qk-row:hover{background:rgba(255,255,255,.5);}
+.qk-ic{width:36px;height:36px;border-radius:11px;background:rgba(255,255,255,.62);
+  border:1px solid rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;color:var(--ink);}
+.qk-ic svg{width:18px;height:18px;}
+.qk-row label{flex:1;font-size:14px;cursor:pointer;}
+.qk-row .chev{width:17px;height:17px;color:var(--muted);}
+
+/* 成就 */
+.badges{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.badge{display:flex;flex-direction:column;align-items:center;gap:9px;}
+.badge-medal{width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  color:#fff;box-shadow:0 10px 22px -10px rgba(28,38,78,.5);}
+.badge-medal svg{width:23px;height:23px;}
+.bm-1{background:linear-gradient(135deg,#8FA8F5,#C4B3F7);}
+.bm-2{background:linear-gradient(135deg,#F2B28E,#F5D08A);}
+.bm-3{background:linear-gradient(135deg,#7CC9B2,#9CCFE8);}
+.bm-off{background:rgba(20,24,38,.1);color:rgba(20,24,38,.32);box-shadow:none;}
+.badge span{font-size:11.5px;color:var(--muted);text-align:center;line-height:1.4;}
+
+@media (max-width:960px){
+  .p-main{grid-template-columns:1fr;}
+  .p-hero{flex-direction:column;align-items:flex-start;gap:22px;padding:32px 28px;}
+  .p-hero-actions{flex-direction:row;width:100%;}
+  .p-hero-actions .btn{flex:1;}
+}
+@media (max-width:680px){
+  .p-stats{grid-template-columns:1fr 1fr;}
+  .badges{grid-template-columns:repeat(4,1fr);gap:8px;}
+  .work-time{display:none;}
+  .profile-shell{padding:96px 0 60px;}
+  .work-del{opacity:.75;}
+}
+
+/* ============================================================
+   通用：返回条 / 子视图间距 / 空态
+============================================================ */
+.back-link{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--ink-soft);
+  margin-bottom:20px;cursor:pointer;}
+.back-link svg{width:16px;height:16px;}
+.back-link:hover{color:var(--ink);}
+.setting-card{margin-bottom:20px;}
+.empty{padding:44px 20px;text-align:center;}
+.empty svg{width:40px;height:40px;color:rgba(20,24,38,.25);margin-bottom:12px;}
+.empty p{font-size:14px;color:var(--muted);margin-bottom:16px;}
+
+/* ============================================================
+   导航：铃铛
+============================================================ */
+.nav-icon-btn{position:relative;width:38px;height:38px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;}
+.nav-icon-btn svg{width:19px;height:19px;}
+.nav-icon-btn:hover{background:rgba(255,255,255,.55);}
+.nav-bell-dot{position:absolute;top:6px;right:7px;width:9px;height:9px;border-radius:50%;
+  background:#E55340;border:2px solid #fff;}
+.nav-bell-dot.off{display:none;}
+
+/* ============================================================
+   作品：新建按钮 / 表单 / 删除
+============================================================ */
+.mini-add{width:34px;height:34px;border-radius:999px;border:1px solid rgba(20,24,38,.18);
+  background:rgba(255,255,255,.62);cursor:pointer;display:flex;align-items:center;justify-content:center;
+  color:var(--ink);transition:transform .3s,background .25s;}
+.mini-add:hover{transform:rotate(90deg);background:#fff;}
+.mini-add svg{width:16px;height:16px;}
+.work-form{margin-top:16px;padding:18px;border-radius:16px;background:rgba(255,255,255,.52);
+  border:1px solid rgba(255,255,255,.88);display:flex;flex-direction:column;gap:12px;}
+.work-form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.work-form select,.work-form input{font-family:var(--sans);font-size:14px;color:var(--ink);
+  border-radius:11px;padding:11px 13px;border:1px solid rgba(20,24,38,.16);background:rgba(255,255,255,.78);}
+.work-form select:focus,.work-form input:focus{outline:none;border-color:rgba(20,24,38,.5);}
+.work-form-actions{display:flex;gap:10px;}
+.work-del{width:32px;height:32px;border-radius:9px;border:none;background:none;cursor:pointer;
+  color:var(--muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  opacity:0;transition:opacity .25s,color .25s,background .25s;}
+.work:hover .work-del{opacity:1;}
+.work-del:hover{color:#C0392B;background:rgba(192,57,43,.1);}
+.work-del svg{width:17px;height:17px;}
+
+/* ============================================================
+   通知页
+============================================================ */
+.notif-filter{display:flex;gap:6px;padding:4px;}
+.nf-btn{border:none;background:none;font-family:var(--sans);font-size:13.5px;color:var(--muted);
+  padding:8px 18px;border-radius:999px;cursor:pointer;transition:background .25s,color .25s;}
+.nf-btn.sel{background:#fff;color:var(--ink);box-shadow:0 5px 14px -6px rgba(28,38,78,.32);}
+.notif{display:flex;align-items:flex-start;gap:14px;padding:16px 6px;border-radius:13px;position:relative;cursor:pointer;}
+.notif+.notif{border-top:1px solid var(--hairline);}
+.notif:hover{background:rgba(255,255,255,.45);}
+.notif-ic{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;
+  color:#fff;flex-shrink:0;}
+.notif-ic svg{width:20px;height:20px;}
+.n-system{background:linear-gradient(135deg,#8FA8F5,#B59FE8);}
+.n-like{background:linear-gradient(135deg,#F29AA7,#F5C0A0);}
+.n-comment{background:linear-gradient(135deg,#7CC9B2,#9CCFE8);}
+.n-follow{background:linear-gradient(135deg,#F2B28E,#F5D08A);}
+.notif-body{flex:1;min-width:0;}
+.notif-body b{font-size:14.5px;font-weight:500;display:block;}
+.notif-body p{font-size:13.5px;color:var(--ink-soft);font-weight:300;margin-top:3px;line-height:1.6;}
+.notif-time{font-size:12px;color:var(--muted);margin-top:6px;display:inline-block;}
+.notif-dot{width:9px;height:9px;border-radius:50%;background:#E55340;margin-top:16px;flex-shrink:0;}
+.notif.read{opacity:.66;}
+.notif.read .notif-body b{font-weight:400;color:var(--ink-soft);}
+
+/* ============================================================
+   设置页：开关 / 危险操作
+============================================================ */
+.switch-row{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:15px 2px;}
+.switch-row+.switch-row{border-top:1px solid var(--hairline);}
+.switch-row b{font-size:14.5px;font-weight:500;display:block;}
+.switch-row p{font-size:12.5px;color:var(--muted);margin-top:3px;font-weight:300;}
+.switch{width:48px;height:28px;border-radius:999px;border:1px solid rgba(20,24,38,.18);
+  background:rgba(20,24,38,.1);position:relative;cursor:pointer;flex-shrink:0;transition:background .3s;}
+.switch i{position:absolute;top:2px;left:2px;width:22px;height:22px;border-radius:50%;background:#fff;
+  box-shadow:0 3px 7px -2px rgba(20,24,38,.4);transition:transform .3s cubic-bezier(.2,.8,.2,1);}
+.switch.on{background:var(--ink);border-color:var(--ink);}
+.switch.on i{transform:translateX(20px);}
+.pwf{margin-top:15px;}
+.btn-danger{background:#C0392B;color:#fff;}
+.btn-danger:hover{background:#D44638;transform:translateY(-2px);}
+.danger-actions{display:flex;gap:12px;flex-wrap:wrap;}
+.danger-note{font-size:12.5px;color:var(--muted);margin-top:15px;font-weight:300;line-height:1.7;}
+</style>
+</head>
+<body>
+
+<!-- ===== 环境背景 ===== -->
+<div class="bg" aria-hidden="true">
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+  <div class="blob blob-4"></div>
+  <div class="grain"></div>
+</div>
+
+<!-- ===== 导航 ===== -->
+<div class="nav-wrap">
+  <nav class="nav">
+    <a class="brand" href="#top" aria-label="AURA 首页">
+      <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+        <circle cx="13.5" cy="16" r="9" stroke="currentColor" stroke-width="2.1"></circle>
+        <circle cx="20.5" cy="16" r="4.6" fill="currentColor"></circle>
+      </svg>
+      <span>AURA</span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#features">核心特性</a></li>
+      <li><a href="#clarity">通透层次</a></li>
+      <li><a href="#nocturne">暗色质感</a></li>
+      <li><a href="#voices">用户评价</a></li>
+    </ul>
+    <div class="nav-actions" id="navAuth">
+      <a class="btn btn-ghost" href="#auth">登录</a>
+      <a class="btn btn-dark btn-sm" href="#auth/register">开始体验</a>
+    </div>
+    <div class="nav-user" id="navUser">
+      <span class="nav-icon-btn clickable" id="navBell" title="消息通知">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 0 1 12 0c0 4 1.2 5 1.8 5.5H4.2C4.8 15 6 14 6 10Z"></path><path d="M10 18.5a2 2 0 0 0 4 0"></path></svg>
+        <i class="nav-bell-dot off" id="bellDot"></i>
+      </span>
+      <span class="nav-avatar clickable" id="navAvatar" title="进入个人主页">A</span>
+      <span class="nav-user-name clickable" id="navName" title="进入个人主页"></span>
+      <button type="button" class="nav-logout" id="navLogout">退出</button>
+    </div>
+  </nav>
+</div>
+
+<main id="top">
+
+<!-- ===== Hero ===== -->
+<section class="hero">
+  <div class="hero-copy">
+    <span class="eyebrow reveal">Light &nbsp;·&nbsp; Glass &nbsp;·&nbsp; Clarity</span>
+    <h1 class="hero-title reveal" style="--d:.08s">于光影之间，<br>见<em>通透</em>之美</h1>
+    <p class="hero-sub reveal" style="--d:.16s">AURA 以磨砂玻璃般的质感语言，重塑数字界面的层次与呼吸感。半透明的层叠、柔和的光、克制的留白——简约，却经得起凝视。</p>
+    <div class="hero-actions reveal" style="--d:.24s">
+      <a class="btn btn-dark" href="#features">立即体验</a>
+      <a class="btn btn-glass" href="#clarity">了解设计理念</a>
+    </div>
+    <div class="hero-meta reveal" style="--d:.32s">
+      <div class="m"><b>200+</b><span>合作设计团队</span></div>
+      <div class="m"><b>4.9 / 5</b><span>平均评分</span></div>
+      <div class="m"><b>12</b><span>国际设计奖项</span></div>
+    </div>
+  </div>
+
+  <div class="hero-visual reveal" style="--d:.2s" aria-hidden="true">
+    <!-- 主玻璃面板 -->
+    <div class="panel panel-main glass">
+      <div class="card-inner">
+        <div class="panel-top">
+          <div class="dots"><span></span><span></span><span></span></div>
+          <span class="panel-title">AURA · 质感工作台</span>
+        </div>
+        <div class="panel-chips">
+          <span class="chip">磨砂层级</span>
+          <span class="chip">实时预览</span>
+          <span class="chip">光影流动</span>
+        </div>
+        <div class="panel-metric">
+          <div>
+            <div class="metric-value">98.6%</div>
+            <div class="metric-label">质感还原度</div>
+          </div>
+          <span class="trend">+12.4%</span>
+        </div>
+        <svg class="spark" viewBox="0 0 420 170" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="sparkFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#141826" stop-opacity=".2"></stop>
+              <stop offset="1" stop-color="#141826" stop-opacity="0"></stop>
+            </linearGradient>
+          </defs>
+          <path d="M0,135 C35,120 55,128 85,105 C115,82 135,95 165,72 C195,49 215,60 245,40 C275,20 295,32 325,22 C355,12 385,18 420,8 L420,170 L0,170 Z" fill="url(#sparkFill)"></path>
+          <path d="M0,135 C35,120 55,128 85,105 C115,82 135,95 165,72 C195,49 215,60 245,40 C275,20 295,32 325,22 C355,12 385,18 420,8" fill="none" stroke="#141826" stroke-width="2.5" stroke-linecap="round"></path>
+          <circle cx="325" cy="22" r="5.5" fill="#ffffff" stroke="#141826" stroke-width="2.5"></circle>
+        </svg>
+        <div class="panel-foot">
+          <div class="mini">
+            <span class="mini-label">模糊半径</span>
+            <span class="mini-bar"><i style="--w:72%"></i></span>
+          </div>
+          <div class="mini">
+            <span class="mini-label">透光率</span>
+            <span class="mini-bar"><i style="--w:86%"></i></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 浮卡 A -->
+    <div class="panel float-a glass">
+      <div class="card-inner float-row">
+        <span class="live-dot"></span>
+        <div>
+          <strong>12,480</strong>
+          <span>位创作者正在使用</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 浮卡 B -->
+    <div class="panel float-b glass">
+      <div class="card-inner float-row">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 3 8l9 5 9-5-9-5Z"></path>
+          <path d="m3 12.5 9 5 9-5"></path>
+          <path d="m3 17 9 5 9-5"></path>
+        </svg>
+        <div>
+          <strong>24 层</strong>
+          <span>磨砂层级实时渲染</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== 信任条 ===== -->
+<div class="trust container">
+  <div class="trust-inner reveal">
+    <span class="trust-label">深受全球设计团队信赖</span>
+    <div class="trust-logos">
+      <span>NOVA</span>
+      <span>MAISON</span>
+      <span>KLAR</span>
+      <span>ORBIT</span>
+      <span>VERRE</span>
+      <span class="zh">青山</span>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Features ===== -->
+<section class="section container" id="features">
+  <div class="section-head reveal">
+    <span class="eyebrow">Features · 核心特性</span>
+    <h2 class="section-title">被看见的，不只是表面</h2>
+    <p class="section-sub">每一处质感都经过反复调校：模糊的尺度、透光的比例、光的走向。我们相信，细节安静地发生，用户自然会感受到。</p>
+  </div>
+  <div class="features-grid">
+    <article class="feature glass reveal">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3 3 8l9 5 9-5-9-5Z"></path>
+          <path d="m3 12.5 9 5 9-5"></path>
+          <path d="m3 17 9 5 9-5"></path>
+        </svg>
+      </div>
+      <h3>磨砂质感</h3>
+      <p>高斯模糊叠加强化饱和度，让半透明层彼此分离，层次再深，也清晰不浑浊。</p>
+    </article>
+    <article class="feature glass reveal" style="--d:.08s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"></path>
+        </svg>
+      </div>
+      <h3>光影流动</h3>
+      <p>背景光斑随时间缓慢流转，色彩自然渗透到前景，每一次凝视，都略有不同。</p>
+    </article>
+    <article class="feature glass reveal" style="--d:.16s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="4" y="4" width="16" height="16" rx="3"></rect>
+          <path d="M4 12h16M12 4v16"></path>
+        </svg>
+      </div>
+      <h3>极简秩序</h3>
+      <p>克制的排版、节奏分明的留白与栅格，让内容自己成为主角，而非装饰的陪衬。</p>
+    </article>
+    <article class="feature glass reveal" style="--d:.24s">
+      <div class="feature-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 3.5 15.5 16l-2.4-6.6L20 7 5 3.5Z"></path>
+        </svg>
+      </div>
+      <h3>细腻交互</h3>
+      <p>微光随鼠标游移、卡片轻盈浮起，弹性而克制的动效，带来近乎触感的反馈。</p>
+    </article>
+  </div>
+</section>
+
+<!-- ===== Showcase 浅色 ===== -->
+<section class="section container" id="clarity">
+  <div class="showcase">
+    <div class="showcase-copy reveal">
+      <span class="eyebrow showcase-eyebrow">Clarity · 通透层次</span>
+      <h2 class="section-title">像玻璃一样，<br>容纳光与色彩</h2>
+      <p class="section-sub">半透明的层级让信息有了纵深。背景的色彩自然渗透到前景，每一层都清晰可辨，又彼此呼应——这是属于屏幕的材质语言。</p>
+      <div class="check-list">
+        <div class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+          <span><b>模糊与饱和度重塑</b>，玻璃之后依旧纤毫毕现</span>
+        </div>
+        <div class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+          <span><b>1px 高光边缘</b>，模拟真实玻璃的折光轮廓</span>
+        </div>
+        <div class="check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+          <span><b>层级再深也不丢失焦点</b>，视线始终知道该落在哪里</span>
+        </div>
+      </div>
+      <a class="btn btn-dark" href="#nocturne">查看设计细节</a>
+    </div>
+    <div class="showcase-img glass reveal" style="--d:.12s">
+      <img src="https://aka.doubaocdn.com/s/lSEx2ryLxG" alt="透过磨砂波纹玻璃的柔和彩色散景" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<!-- ===== Showcase 深色 ===== -->
+<section class="dark-section" id="nocturne">
+  <div class="dark-bg" aria-hidden="true">
+    <div class="dblob dblob-1"></div>
+    <div class="dblob dblob-2"></div>
+    <div class="dblob dblob-3"></div>
+  </div>
+  <div class="container">
+    <div class="showcase">
+      <div class="showcase-img glass reveal">
+        <img src="https://aka.doubaocdn.com/s/QLwBN2w8GS" alt="暗背景中透明玻璃几何体折射出的彩色焦散光线" loading="lazy">
+      </div>
+      <div class="showcase-copy reveal" style="--d:.12s">
+        <span class="eyebrow showcase-eyebrow">Nocturne · 流动质感</span>
+        <h2 class="section-title">暗夜里，<br>光有了形状</h2>
+        <p class="section-sub">当环境暗下来，玻璃开始折射自己的光。我们为暗色场景重新调校了透明度曲线与焦散，让每一次聚焦，都像光线穿过棱镜。</p>
+        <div class="check-list">
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+            <span><b>暗色专属透明度曲线</b>，黑得下去，也透得出来</span>
+          </div>
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+            <span><b>棱镜焦散动效</b>，光线在边缘缓慢游走</span>
+          </div>
+          <div class="check">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>
+            <span><b>OLED 级纯黑基底</b>，让每一寸发光都被珍惜</span>
+          </div>
+        </div>
+        <div style="display:flex;gap:13px;flex-wrap:wrap;">
+          <a class="btn btn-light" href="#cta">探索暗色版本</a>
+          <a class="btn btn-outline-light" href="#clarity">对比浅色模式</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Stats ===== -->
+<section class="section container">
+  <div class="stats-band glass reveal">
+    <div class="stat">
+      <div class="stat-num" data-count="200" data-suffix="+">0</div>
+      <div class="stat-label">合作设计团队</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="98" data-suffix="%">0</div>
+      <div class="stat-label">客户满意度</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="4.9" data-decimals="1">0</div>
+      <div class="stat-label">平均评分（满分 5）</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" data-count="12">0</div>
+      <div class="stat-label">国际设计奖项</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== Testimonials ===== -->
+<section class="section container" id="voices">
+  <div class="section-head center reveal">
+    <span class="eyebrow">Voices · 用户评价</span>
+    <h2 class="section-title">他们选择了 AURA</h2>
+  </div>
+  <div class="testi-grid">
+    <article class="testi glass reveal">
+      <span class="testi-quote">“</span>
+      <p>我们试过很多质感方案，AURA 是第一个让产品界面看起来「有温度」的。改版上线后，用户的平均停留时长几乎翻了一倍。</p>
+      <div class="testi-author">
+        <span class="avatar av-1">LX</span>
+        <div><b>林之夏</b><span>NOVA · 产品设计总监</span></div>
+      </div>
+    </article>
+    <article class="testi glass reveal" style="--d:.08s">
+      <span class="testi-quote">“</span>
+      <p>它把克制做到了极致。没有多余的装饰，光斑、留白和玻璃边缘都恰到好处，每个角落都经得起放大了看。</p>
+      <div class="testi-author">
+        <span class="avatar av-2">CY</span>
+        <div><b>陈屿</b><span>MAISON · 创意总监</span></div>
+      </div>
+    </article>
+    <article class="testi glass reveal" style="--d:.16s">
+      <span class="testi-quote">“</span>
+      <p>暗色版本的焦散光影令人惊喜，光线穿过玻璃的那一刻真的会让人愣住。上线当周，我们就拿到了年度设计提名。</p>
+      <div class="testi-author">
+        <span class="avatar av-3">ZY</span>
+        <div><b>周亦然</b><span>ORBIT · 创始人</span></div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ===== CTA ===== -->
+<section class="cta-section container" id="cta">
+  <div class="cta-panel glass reveal">
+    <div class="cta-blob cta-blob-1"></div>
+    <div class="cta-blob cta-blob-2"></div>
+    <div class="card-inner">
+      <span class="eyebrow" style="justify-content:center;">Start Creating · 开始创作</span>
+      <h2>让你的下一个作品，自带光</h2>
+      <p>从一套通透的质感语言开始。免费创建你的第一个页面，无需配置环境，十分钟即可上线。</p>
+      <div class="cta-actions">
+        <a class="btn btn-dark" href="#auth/register">免费开始创作</a>
+        <a class="btn btn-glass" href="#voices">预约产品演示</a>
+      </div>
+      <span class="cta-note">无需信用卡 · 免费版永久可用 · 随时取消</span>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ===== Footer ===== -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="#top">
+          <svg viewBox="0 0 32 32" fill="none" width="28" height="28" aria-hidden="true">
+            <circle cx="13.5" cy="16" r="9" stroke="currentColor" stroke-width="2.1"></circle>
+            <circle cx="20.5" cy="16" r="4.6" fill="currentColor"></circle>
+          </svg>
+          <span>AURA</span>
+        </a>
+        <p class="footer-tag">以磨砂玻璃般的质感语言，为数字世界保留一点光，一点呼吸。</p>
+      </div>
+      <div>
+        <h4>产品</h4>
+        <ul>
+          <li><a href="#features">质感系统</a></li>
+          <li><a href="#clarity">组件库</a></li>
+          <li><a href="#nocturne">暗色模式</a></li>
+          <li><a href="#cta">图标与素材</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>资源</h4>
+        <ul>
+          <li><a href="#clarity">设计指南</a></li>
+          <li><a href="#features">更新日志</a></li>
+          <li><a href="#voices">创作者社区</a></li>
+          <li><a href="#cta">帮助中心</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>公司</h4>
+        <ul>
+          <li><a href="#voices">关于 AURA</a></li>
+          <li><a href="#features">博客</a></li>
+          <li><a href="#cta">加入我们</a></li>
+          <li><a href="#cta">联系合作</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 AURA Studio · 以光为名</span>
+      <div class="links">
+        <a href="#top">隐私政策</a>
+        <a href="#top">服务条款</a>
+        <a href="#top">hello@aura.studio</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ===== 登录 / 注册 ===== -->
+<div class="auth-overlay" id="authOverlay" data-tab="login">
+  <div class="auth-card glass">
+    <button type="button" class="auth-close" id="authClose" aria-label="关闭登录窗口">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+    </button>
+    <div class="card-inner">
+      <div class="auth-brand">
+        <a class="brand" href="#top">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+            <circle cx="13.5" cy="16" r="9" stroke="currentColor" stroke-width="2.1"></circle>
+            <circle cx="20.5" cy="16" r="4.6" fill="currentColor"></circle>
+          </svg>
+          <span>AURA</span>
+        </a>
+        <div>
+          <h3 class="auth-title title-login">欢迎回来</h3>
+          <h3 class="auth-title title-register">创建你的账号</h3>
+          <p class="auth-sub sub-login">登录账号，继续你的光影创作</p>
+          <p class="auth-sub sub-register">只需一分钟，开启通透质感之旅</p>
+        </div>
+      </div>
+
+      <div class="auth-tabs">
+        <span class="auth-tab-ind"></span>
+        <button type="button" class="auth-tab auth-tab-login" data-go="login">登录</button>
+        <button type="button" class="auth-tab auth-tab-register" data-go="register">注册</button>
+      </div>
+
+      <!-- 登录表单 -->
+      <form class="auth-form form-login" id="formLogin" novalidate>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg>
+          </span>
+          <input type="email" id="loginEmail" placeholder="邮箱地址" autocomplete="email">
+          <p class="field-error">请输入正确的邮箱地址</p>
+        </div>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10" width="15" height="10.5" rx="3"></rect><path d="M8 10V7.6a4 4 0 0 1 8 0V10"></path></svg>
+          </span>
+          <input type="password" id="loginPw" placeholder="密码" autocomplete="current-password">
+          <button type="button" class="pw-toggle" aria-label="显示或隐藏密码">
+            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"></path><circle cx="12" cy="12" r="2.8"></circle></svg>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.9A8.8 8.8 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15 15 0 0 1-2.6 3.2M6.2 7.4A14.4 14.4 0 0 0 2.5 12S6 18.5 12 18.5a8.6 8.6 0 0 0 3.6-.8"></path></svg>
+          </button>
+          <p class="field-error">请输入密码</p>
+        </div>
+        <div class="form-row">
+          <label class="remember">
+            <input type="checkbox" id="rememberCheck" checked>
+            <span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg></span>
+            记住我
+          </label>
+          <a class="link-quiet" id="forgotPw" href="#auth">忘记密码？</a>
+        </div>
+        <button type="submit" class="btn btn-dark btn-block">登 录</button>
+        <div class="auth-divider">或使用以下方式</div>
+        <div class="social-row">
+          <button type="button" class="social-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 7.5 4 12l4.5 4.5M15.5 7.5 20 12l-4.5 4.5"></path></svg>
+            开发者登录
+          </button>
+          <button type="button" class="social-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="3" width="10" height="18" rx="2.5"></rect><path d="M11 17.5h2"></path></svg>
+            短信登录
+          </button>
+        </div>
+        <p class="auth-switch">还没有账号？<button type="button" data-go="register">立即注册</button></p>
+      </form>
+
+      <!-- 注册表单 -->
+      <form class="auth-form form-register" id="formRegister" novalidate>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8.5" r="3.6"></circle><path d="M5 19.5c.8-3.2 3.6-4.8 7-4.8s6.2 1.6 7 4.8"></path></svg>
+          </span>
+          <input type="text" id="regName" placeholder="昵称（2-16 个字符）" autocomplete="nickname">
+          <p class="field-error">昵称需 2-16 个字符</p>
+        </div>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg>
+          </span>
+          <input type="email" id="regEmail" placeholder="邮箱地址" autocomplete="email">
+          <p class="field-error">请输入正确的邮箱地址</p>
+        </div>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="10" width="15" height="10.5" rx="3"></rect><path d="M8 10V7.6a4 4 0 0 1 8 0V10"></path></svg>
+          </span>
+          <input type="password" id="regPw" placeholder="设置密码（至少 8 位）" autocomplete="new-password">
+          <button type="button" class="pw-toggle" aria-label="显示或隐藏密码">
+            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"></path><circle cx="12" cy="12" r="2.8"></circle></svg>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.9A8.8 8.8 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15 15 0 0 1-2.6 3.2M6.2 7.4A14.4 14.4 0 0 0 2.5 12S6 18.5 12 18.5a8.6 8.6 0 0 0 3.6-.8"></path></svg>
+          </button>
+          <p class="field-error">密码至少 8 位，建议混合字母与数字</p>
+        </div>
+        <div class="pw-strength" id="pwStrength">
+          <div class="pw-bars"><i></i><i></i><i></i></div>
+          <span class="pw-text">弱</span>
+        </div>
+        <div class="field">
+          <span class="field-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.4 2.8 7.8 7 9 4.2-1.2 7-4.6 7-9V6l-7-3Z"></path><path d="m9 12 2 2 4-4"></path></svg>
+          </span>
+          <input type="password" id="regPw2" placeholder="再次输入密码" autocomplete="new-password">
+          <button type="button" class="pw-toggle" aria-label="显示或隐藏密码">
+            <svg class="eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"></path><circle cx="12" cy="12" r="2.8"></circle></svg>
+            <svg class="eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3l18 18"></path><path d="M10.6 5.9A8.8 8.8 0 0 1 12 5.5c6 0 9.5 6.5 9.5 6.5a15 15 0 0 1-2.6 3.2M6.2 7.4A14.4 14.4 0 0 0 2.5 12S6 18.5 12 18.5a8.6 8.6 0 0 0 3.6-.8"></path></svg>
+          </button>
+          <p class="field-error">两次输入的密码不一致</p>
+        </div>
+        <div class="form-row" style="justify-content:flex-start;align-items:flex-start;">
+          <label class="remember">
+            <input type="checkbox" id="agreeCheck">
+            <span class="cbox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg></span>
+            <span>我已阅读并同意</span>
+          </label>
+          <span style="font-size:13px;line-height:1.95;">
+            <a class="link-quiet terms-link" href="#auth">《服务条款》</a> 与 <a class="link-quiet terms-link" href="#auth">《隐私政策》</a>
+          </span>
+        </div>
+        <button type="submit" class="btn btn-dark btn-block">创建账号</button>
+        <p class="auth-switch">已有账号？<button type="button" data-go="login">返回登录</button></p>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- toast 容器 -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite"></div>
+
+<!-- ===== 个人主页（登录后） ===== -->
+<div class="profile-view" id="profileView">
+  <div class="profile-shell container">
+
+    <!-- 欢迎横幅 -->
+    <section class="p-hero">
+      <div class="p-hero-blob p-hero-blob-1"></div>
+      <div class="p-hero-blob p-hero-blob-2"></div>
+
+      <!-- 显示态 -->
+      <div class="card-inner" id="pHeroView" style="display:flex;align-items:center;gap:30px;width:100%;flex-wrap:wrap;">
+        <div class="p-avatar" id="pAvatar">A</div>
+        <div class="p-id">
+          <div class="p-name-row">
+            <h2 id="pName"></h2>
+            <span class="p-pro-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4 8l3.5 3L12 5l4.5 6L20 8l-1.6 10.5H5.6L4 8Z"></path></svg>
+              Pro 会员
+            </span>
+          </div>
+          <p class="p-bio" id="pBio"></p>
+          <div class="p-meta">
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7.5 8 5.5 8-5.5"></path></svg>
+              <b id="pEmail"></b>
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"></rect><path d="M3.5 9.5h17M8 3v4M16 3v4"></path></svg>
+              加入于 <b id="pJoin"></b>
+            </span>
+            <span>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M9 4 7.5 20M16.5 4 15 20M5 8.5h15M4 15.5h15"></path></svg>
+              ID <b id="pUid"></b>
+            </span>
+          </div>
+        </div>
+        <div class="p-hero-actions">
+          <button type="button" class="btn btn-dark" id="editBtn">编辑资料</button>
+        </div>
+      </div>
+
+      <!-- 编辑态 -->
+      <div class="p-edit" id="pEdit">
+        <div class="p-edit-row">
+          <div class="p-edit-field">
+            <label>昵称（2-16 个字符）</label>
+            <input type="text" id="editName" maxlength="16">
+          </div>
+          <div class="p-edit-field">
+            <label>头像配色</label>
+            <div class="p-colorpick" id="colorPick"></div>
+          </div>
+        </div>
+        <div class="p-edit-field">
+          <label>个人简介</label>
+          <textarea id="editBio" rows="3" maxlength="60" placeholder="介绍一下自己吧（最多 60 字）"></textarea>
+        </div>
+        <div class="p-edit-actions">
+          <button type="button" class="btn btn-dark" id="saveEdit">保存修改</button>
+          <button type="button" class="btn btn-glass" id="cancelEdit">取消</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 数据概览 -->
+    <section class="p-stats">
+      <div class="p-stat glass">
+        <div class="p-stat-top">
+          <span class="p-stat-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h4l2 2.5h8A1.5 1.5 0 0 1 20 9v9a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3 18V6.5Z"></path></svg>
+          </span>
+          <span class="p-stat-trend">+3</span>
+        </div>
+        <div class="p-stat-num" id="statWorksNum">12</div>
+        <div class="p-stat-label">我的作品</div>
+      </div>
+      <div class="p-stat glass">
+        <div class="p-stat-top">
+          <span class="p-stat-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20S3.5 14.5 3.5 8.8c0-2.7 2-4.6 4.5-4.6 1.7 0 3.2.9 4 2.3.8-1.4 2.3-2.3 4-2.3 2.5 0 4.5 1.9 4.5 4.6C20.5 14.5 12 20 12 20Z"></path></svg>
+          </span>
+          <span class="p-stat-trend">+9</span>
+        </div>
+        <div class="p-stat-num">48</div>
+        <div class="p-stat-label">我的收藏</div>
+      </div>
+      <div class="p-stat glass">
+        <div class="p-stat-top">
+          <span class="p-stat-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9L12 3.5Z"></path></svg>
+          </span>
+          <span class="p-stat-trend">+52</span>
+        </div>
+        <div class="p-stat-num">326</div>
+        <div class="p-stat-label">收获点赞</div>
+      </div>
+      <div class="p-stat glass">
+        <div class="p-stat-top">
+          <span class="p-stat-ic">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12Z"></path><circle cx="12" cy="12" r="2.8"></circle></svg>
+          </span>
+          <span class="p-stat-trend">+18%</span>
+        </div>
+        <div class="p-stat-num">1,280</div>
+        <div class="p-stat-label">主页访问</div>
+      </div>
+    </section>
+
+    <!-- 主内容 -->
+    <section class="p-main">
+      <div class="p-col-left">
+
+        <!-- 活跃度 -->
+        <div class="p-card glass">
+          <div class="p-card-head"><h3>创作活跃度</h3><span class="p-card-tag">近 7 天</span></div>
+          <div class="activity">
+            <div class="act-col"><div class="act-bar" style="height:42%"></div><span class="act-day">一</span></div>
+            <div class="act-col"><div class="act-bar" style="height:68%"></div><span class="act-day">二</span></div>
+            <div class="act-col"><div class="act-bar" style="height:55%"></div><span class="act-day">三</span></div>
+            <div class="act-col"><div class="act-bar" style="height:88%"></div><span class="act-day">四</span></div>
+            <div class="act-col"><div class="act-bar" style="height:62%"></div><span class="act-day">五</span></div>
+            <div class="act-col"><div class="act-bar" style="height:98%"></div><span class="act-day">六</span></div>
+            <div class="act-col"><div class="act-bar" style="height:76%"></div><span class="act-day">日</span></div>
+          </div>
+        </div>
+
+        <!-- 我的作品（真实增删） -->
+        <div class="p-card glass" id="worksCard">
+          <div class="p-card-head">
+            <h3>我的作品</h3>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span class="p-card-tag" id="worksCount">共 0 件</span>
+              <button type="button" class="mini-add" id="addWorkBtn" title="新建作品">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg>
+              </button>
+            </div>
+          </div>
+          <div class="work-list" id="workList"></div>
+          <div class="work-form" id="workForm" hidden>
+            <input type="text" id="newWorkTitle" placeholder="作品名称（最多 20 字）" maxlength="20">
+            <div class="work-form-row">
+              <select id="newWorkType">
+                <option>视觉设计</option>
+                <option>UI 组件</option>
+                <option>动效设计</option>
+                <option>网页设计</option>
+              </select>
+              <select id="newWorkStatus">
+                <option>草稿</option>
+                <option>审核中</option>
+                <option>已发布</option>
+              </select>
+            </div>
+            <div class="work-form-actions">
+              <button type="button" class="btn btn-dark btn-sm" id="saveWork">创建作品</button>
+              <button type="button" class="btn btn-glass btn-sm" id="cancelWork">取消</button>
+            </div>
+          </div>
+          <div class="empty" id="worksEmpty" hidden>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8l-5-5Z"></path><path d="M14 3v5h5"></path></svg>
+            <p>还没有作品，去创作第一件吧</p>
+            <button type="button" class="btn btn-glass btn-sm" id="emptyAddWork">立即创作</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="p-col-right">
+
+        <!-- 账号信息 -->
+        <div class="p-card glass">
+          <div class="p-card-head"><h3>账号信息</h3></div>
+          <div class="info-row"><span>昵称</span><b id="iName"></b></div>
+          <div class="info-row"><span>邮箱</span><b id="iEmail"></b></div>
+          <div class="info-row"><span>注册时间</span><b id="iJoin"></b></div>
+          <div class="info-row"><span>账号 ID</span><b id="iUid"></b></div>
+        </div>
+
+        <!-- 快捷入口 -->
+        <div class="p-card glass">
+          <div class="p-card-head"><h3>快捷入口</h3></div>
+          <div class="qk-row" data-qk="账号设置" data-to="#settings">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2.8v2.3M12 18.9v2.3M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.8 12h2.3M18.9 12h2.3M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"></path></svg></span>
+            <label>账号设置</label>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+          <div class="qk-row" data-qk="消息通知" data-to="#notifications">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 0 1 12 0c0 4 1.2 5 1.8 5.5H4.2C4.8 15 6 14 6 10Z"></path><path d="M10 18.5a2 2 0 0 0 4 0"></path></svg></span>
+            <label>消息通知</label>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+          <div class="qk-row" data-qk="我的收藏">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h12v16l-6-4-6 4V4Z"></path></svg></span>
+            <label>我的收藏</label>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+          <div class="qk-row" data-qk="帮助中心">
+            <span class="qk-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M9.6 9.3a2.5 2.5 0 0 1 4.6 1.4c0 1.6-2.2 2-2.2 3.3"></path><circle cx="12" cy="17" r=".7" fill="currentColor" stroke="none"></circle></svg></span>
+            <label>帮助中心</label>
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m9 6 6 6-6 6"></path></svg>
+          </div>
+        </div>
+
+        <!-- 成就 -->
+        <div class="p-card glass">
+          <div class="p-card-head"><h3>我的成就</h3></div>
+          <div class="badges">
+            <div class="badge">
+              <span class="badge-medal bm-1"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20l1-4.5L15.5 5a2.1 2.1 0 0 1 3 3L8 18.5 4 20Z"></path></svg></span>
+              <span>初次创作</span>
+            </div>
+            <div class="badge">
+              <span class="badge-medal bm-2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3.5 2.6 5.3 5.9.9-4.3 4.1 1 5.8L12 16.9l-5.2 2.7 1-5.8L3.5 9.7l5.9-.9L12 3.5Z"></path></svg></span>
+              <span>百赞达成</span>
+            </div>
+            <div class="badge">
+              <span class="badge-medal bm-3"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c.5 3-2 4.5-2 7a2 2 0 0 0 4 0c0-.8-.3-1.4-.6-2 1.6 1 3.6 3 3.6 6a5.5 5.5 0 0 1-11 0c0-4 3.5-6.5 6-11Z"></path></svg></span>
+              <span>连续 7 天</span>
+            </div>
+            <div class="badge">
+              <span class="badge-medal bm-off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="9" r="3.2"></circle><path d="M3.5 19c.6-2.8 2.8-4.2 5.5-4.2s4.9 1.4 5.5 4.2"></path><path d="M15.5 5.8a3.2 3.2 0 0 1 0 6.1M17 14.9c2 .7 3.2 2.2 3.5 4.1"></path></svg></span>
+              <span>千人关注</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
+
+<!-- ===== 消息通知页 ===== -->
+<div class="profile-view" id="notifView">
+  <div class="profile-shell container">
+    <a class="back-link" href="#profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"></path></svg>
+      返回个人主页
+    </a>
+    <section class="p-hero" style="padding:28px 32px;">
+      <div class="card-inner" style="display:flex;justify-content:space-between;align-items:center;width:100%;gap:16px;flex-wrap:wrap;">
+        <div>
+          <h2 style="font-family:var(--serif);font-size:26px;font-weight:700;">消息通知</h2>
+          <p class="p-bio" style="margin:7px 0 0;" id="notifSub">暂无未读消息</p>
+        </div>
+        <button type="button" class="btn btn-glass btn-sm" id="readAll">全部标为已读</button>
+      </div>
+    </section>
+    <div class="p-card glass" style="margin-top:20px;padding:8px 10px;">
+      <div class="notif-filter">
+        <button type="button" class="nf-btn sel" data-f="all">全部</button>
+        <button type="button" class="nf-btn" data-f="system">系统</button>
+        <button type="button" class="nf-btn" data-f="social">互动</button>
+      </div>
+    </div>
+    <div class="p-card glass" style="margin-top:18px;">
+      <div id="notifList"></div>
+      <div class="empty" id="notifEmpty" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 10a6 6 0 0 1 12 0c0 4 1.2 5 1.8 5.5H4.2C4.8 15 6 14 6 10Z"></path><path d="M10 18.5a2 2 0 0 0 4 0"></path></svg>
+        <p>这里还没有消息</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 账号设置页 ===== -->
+<div class="profile-view" id="settingView">
+  <div class="profile-shell container">
+    <a class="back-link" href="#profile">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m14 6-6 6 6 6"></path></svg>
+      返回个人主页
+    </a>
+
+    <section class="p-card glass setting-card">
+      <div class="p-card-head"><h3>个人资料</h3></div>
+      <div class="p-edit-field" style="margin-bottom:16px;">
+        <label>昵称（2-16 个字符）</label>
+        <input type="text" id="setName" maxlength="16">
+      </div>
+      <div class="p-edit-field">
+        <label>个人简介（最多 60 字）</label>
+        <textarea id="setBio" rows="3" maxlength="60"></textarea>
+      </div>
+      <div style="margin-top:18px;">
+        <button type="button" class="btn btn-dark btn-sm" id="saveProfile2">保存资料</button>
+      </div>
+    </section>
+
+    <section class="p-card glass setting-card">
+      <div class="p-card-head"><h3>账号安全</h3></div>
+      <div class="info-row"><span>登录邮箱</span><b id="setEmail"></b></div>
+      <div class="p-edit-field pwf">
+        <label>当前密码</label>
+        <input type="password" id="oldPw" autocomplete="current-password">
+      </div>
+      <div class="p-edit-field pwf">
+        <label>新密码（至少 8 位）</label>
+        <input type="password" id="newPw" autocomplete="new-password">
+      </div>
+      <div class="p-edit-field pwf">
+        <label>确认新密码</label>
+        <input type="password" id="newPw2" autocomplete="new-password">
+      </div>
+      <div style="margin-top:18px;">
+        <button type="button" class="btn btn-dark btn-sm" id="changePwBtn">修改密码</button>
+      </div>
+    </section>
+
+    <section class="p-card glass setting-card">
+      <div class="p-card-head"><h3>偏好设置</h3></div>
+      <div class="switch-row">
+        <div><b>接收邮件通知</b><p>作品动态与系统消息会发送到你的邮箱</p></div>
+        <button type="button" class="switch" id="sw-emailNotify"><i></i></button>
+      </div>
+      <div class="switch-row">
+        <div><b>公开我的作品</b><p>其他用户可以在你的主页看到作品</p></div>
+        <button type="button" class="switch" id="sw-publicWorks"><i></i></button>
+      </div>
+      <div class="switch-row">
+        <div><b>跟随系统深色模式</b><p>夜晚自动切换为暗色界面</p></div>
+        <button type="button" class="switch" id="sw-autoDark"><i></i></button>
+      </div>
+    </section>
+
+    <section class="p-card glass setting-card">
+      <div class="p-card-head"><h3>更多操作</h3></div>
+      <div class="danger-actions">
+        <button type="button" class="btn btn-glass btn-sm" id="setLogout">退出登录</button>
+        <button type="button" class="btn btn-danger btn-sm" id="deleteAccount">注销账号</button>
+      </div>
+      <p class="danger-note">注销后，该账号的资料、作品与通知将从本机永久删除，且无法恢复。</p>
+    </section>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   交互：导航状态 / 滚动揭示 / 数字计数 / Hero 视差
+============================================================ */
+
+/* 导航滚动加深 */
+(function(){
+  var nav=document.querySelector('.nav');
+  function onScroll(){ nav.classList.toggle('scrolled',window.scrollY>24); }
+  window.addEventListener('scroll',onScroll,{passive:true});
+  onScroll();
+})();
+
+/* 滚动揭示 */
+(function(){
+  var els=document.querySelectorAll('.reveal');
+  if(!('IntersectionObserver' in window)){
+    els.forEach(function(el){el.classList.add('in');});
+    return;
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:.14,rootMargin:'0px 0px -6% 0px'});
+  els.forEach(function(el){io.observe(el);});
+})();
+
+/* 数字计数动画 */
+(function(){
+  var nums=document.querySelectorAll('.stat-num');
+  function run(el){
+    var target=parseFloat(el.getAttribute('data-count'));
+    var dec=parseInt(el.getAttribute('data-decimals')||'0',10);
+    var suffix=el.getAttribute('data-suffix')||'';
+    var dur=1500,t0=performance.now();
+    function tick(now){
+      var p=Math.min((now-t0)/dur,1);
+      var eased=1-Math.pow(1-p,3);
+      el.textContent=(target*eased).toFixed(dec)+suffix;
+      if(p<1){requestAnimationFrame(tick);}
+    }
+    requestAnimationFrame(tick);
+  }
+  if(!('IntersectionObserver' in window)){
+    nums.forEach(run);
+    return;
+  }
+  var io=new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if(entry.isIntersecting){
+        run(entry.target);
+        io.unobserve(entry.target);
+      }
+    });
+  },{threshold:.5});
+  nums.forEach(function(el){io.observe(el);});
+})();
+
+/* Hero 鼠标视差 */
+(function(){
+  var hero=document.querySelector('.hero');
+  if(!hero){return;}
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){return;}
+  hero.addEventListener('pointermove',function(e){
+    var r=hero.getBoundingClientRect();
+    var x=(e.clientX-r.left)/r.width-0.5;
+    var y=(e.clientY-r.top)/r.height-0.5;
+    hero.style.setProperty('--mx',x.toFixed(3));
+    hero.style.setProperty('--my',y.toFixed(3));
+  });
+  hero.addEventListener('pointerleave',function(){
+    hero.style.setProperty('--mx','0');
+    hero.style.setProperty('--my','0');
+  });
+})();
+
+/* ============================================================
+   登录 / 注册（本地账号，浏览器存储，无需后端）
+============================================================ */
+(function(){
+  var overlay=document.getElementById('authOverlay');
+  var formLogin=document.getElementById('formLogin');
+  var formRegister=document.getElementById('formRegister');
+  var loginEmail=document.getElementById('loginEmail');
+  var loginPw=document.getElementById('loginPw');
+  var rememberCheck=document.getElementById('rememberCheck');
+  var regName=document.getElementById('regName');
+  var regEmail=document.getElementById('regEmail');
+  var regPw=document.getElementById('regPw');
+  var regPw2=document.getElementById('regPw2');
+  var agreeCheck=document.getElementById('agreeCheck');
+  var pwStrength=document.getElementById('pwStrength');
+  var pwText=pwStrength.querySelector('.pw-text');
+  var navAuth=document.getElementById('navAuth');
+  var navUser=document.getElementById('navUser');
+  var navName=document.getElementById('navName');
+  var navAvatar=document.getElementById('navAvatar');
+  var toastWrap=document.getElementById('toastWrap');
+
+  var USERS_KEY='aura_users', SESSION_KEY='aura_session', TMP_KEY='aura_session_tmp';
+  var emailRe=/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  /* ---- 存储工具 ---- */
+  function getUsers(){
+    try{return JSON.parse(localStorage.getItem(USERS_KEY))||[];}
+    catch(e){return [];}
+  }
+  function saveUsers(list){localStorage.setItem(USERS_KEY,JSON.stringify(list));}
+  function sessionEmail(){
+    return localStorage.getItem(SESSION_KEY)||sessionStorage.getItem(TMP_KEY)||'';
+  }
+  function currentUser(){
+    var email=sessionEmail();
+    if(!email){return null;}
+    var list=getUsers();
+    for(var i=0;i<list.length;i++){
+      if(list[i].email===email){return list[i];}
+    }
+    return null;
+  }
+
+  /* ---- toast ---- */
+  function toast(msg,ok){
+    var t=document.createElement('div');
+    t.className='toast'+(ok?' ok':'');
+    var icon=ok
+      ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4 4 10-10"></path></svg>'
+      : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 11v5"></path><circle cx="12" cy="8" r="1" fill="currentColor" stroke="none"></circle></svg>';
+    t.innerHTML=icon+'<span></span>';
+    t.querySelector('span').textContent=msg;
+    toastWrap.appendChild(t);
+    requestAnimationFrame(function(){t.classList.add('show');});
+    setTimeout(function(){
+      t.classList.remove('show');
+      setTimeout(function(){if(t.parentNode){t.parentNode.removeChild(t);}},380);
+    },2600);
+  }
+
+  /* ---- 字段错误 ---- */
+  function markField(input,msg){
+    var field=input.closest('.field');
+    field.classList.add('has-error');
+    if(msg){field.querySelector('.field-error').textContent=msg;}
+  }
+  function clearAllErrors(){
+    overlay.querySelectorAll('.field.has-error').forEach(function(f){
+      f.classList.remove('has-error');
+    });
+  }
+  overlay.querySelectorAll('.field input').forEach(function(input){
+    input.addEventListener('input',function(){
+      input.closest('.field').classList.remove('has-error');
+    });
+  });
+
+  /* ---- tab 切换 ---- */
+  function setTab(tab){
+    overlay.setAttribute('data-tab',tab);
+    clearAllErrors();
+  }
+  overlay.querySelectorAll('[data-go]').forEach(function(btn){
+    btn.addEventListener('click',function(){setTab(btn.getAttribute('data-go'));});
+  });
+
+  /* ---- 密码显隐 ---- */
+  overlay.querySelectorAll('.pw-toggle').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      var input=btn.closest('.field').querySelector('input');
+      var show=btn.classList.toggle('show');
+      input.type=show?'text':'password';
+    });
+  });
+  function resetPwToggles(){
+    overlay.querySelectorAll('.pw-toggle.show').forEach(function(btn){
+      btn.classList.remove('show');
+      btn.closest('.field').querySelector('input').type='password';
+    });
+  }
+
+  /* ---- 密码强度 ---- */
+  function pwScore(v){
+    var kinds=(/[a-zA-Z]/.test(v)?1:0)+(/\d/.test(v)?1:0)+(/[^a-zA-Z0-9]/.test(v)?1:0);
+    if(v.length>=12&&kinds>=2){return 3;}
+    if(v.length>=8&&kinds>=2){return 2;}
+    return 1;
+  }
+  regPw.addEventListener('input',function(){
+    var v=regPw.value;
+    pwStrength.classList.toggle('on',v.length>0);
+    var s=v?pwScore(v):0;
+    pwStrength.setAttribute('data-s',String(s));
+    pwText.textContent=['','弱','中','强'][s]||'';
+  });
+
+  /* ---- hash 路由 ---- */
+  var profileView=document.getElementById('profileView');
+  var notifView=document.getElementById('notifView');
+  var settingView=document.getElementById('settingView');
+  var allViews=[profileView,notifView,settingView];
+  function closeViews(){allViews.forEach(function(v){v.classList.remove('open');});}
+  function openSubView(v){
+    overlay.classList.remove('open');
+    closeViews();
+    v.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function denySub(){
+    closeViews();
+    document.body.style.overflow='';
+    toast('请先登录后再查看');
+    location.hash='#auth';
+  }
+  function route(){
+    var h=location.hash;
+    if(h.indexOf('#auth')===0){
+      setTab(h.indexOf('register')>-1?'register':'login');
+      closeViews();
+      overlay.classList.add('open');
+      document.body.style.overflow='hidden';
+    }else if(h==='#profile'){
+      if(currentUser()){openSubView(profileView);renderProfile();renderWorks();}
+      else{denySub();}
+    }else if(h==='#notifications'){
+      if(currentUser()){openSubView(notifView);renderNotifs();}
+      else{denySub();}
+    }else if(h==='#settings'){
+      if(currentUser()){openSubView(settingView);renderSettings();}
+      else{denySub();}
+    }else{
+      overlay.classList.remove('open');
+      closeViews();
+      document.body.style.overflow='';
+    }
+  }
+  window.addEventListener('hashchange',route);
+  function closeAuth(){
+    if(location.hash.indexOf('#auth')===0){location.hash='#top';}
+    else{
+      overlay.classList.remove('open');
+      document.body.style.overflow='';
+    }
+  }
+  document.getElementById('authClose').addEventListener('click',closeAuth);
+  overlay.addEventListener('click',function(e){
+    if(e.target===overlay){closeAuth();}
+  });
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&overlay.classList.contains('open')){closeAuth();}
+  });
+
+  /* ---- 注册提交 ---- */
+  formRegister.addEventListener('submit',function(e){
+    e.preventDefault();
+    clearAllErrors();
+    var name=regName.value.trim();
+    var email=regEmail.value.trim();
+    var pw=regPw.value;
+    var pw2=regPw2.value;
+    var ok=true;
+    if(name.length<2||name.length>16){markField(regName);ok=false;}
+    if(!emailRe.test(email)){markField(regEmail);ok=false;}
+    if(pw.length<8){markField(regPw);ok=false;}
+    if(!pw2||pw!==pw2){markField(regPw2);ok=false;}
+    if(!agreeCheck.checked){toast('请先阅读并同意服务条款与隐私政策');ok=false;}
+    if(!ok){return;}
+    var list=getUsers();
+    for(var i=0;i<list.length;i++){
+      if(list[i].email===email){
+        markField(regEmail,'该邮箱已注册，请直接登录');
+        return;
+      }
+    }
+    list.push({
+      name:name,email:email,password:pw,
+      uid:'AURA-'+(10000+list.length+1),
+      joinTime:new Date().toISOString().slice(0,10),
+      bio:'',
+      avatar:list.length % 6
+    });
+    saveUsers(list);
+    formRegister.reset();
+    resetPwToggles();
+    pwStrength.classList.remove('on');
+    pwStrength.removeAttribute('data-s');
+    loginEmail.value=email;
+    setTab('login');
+    toast('注册成功，请登录',true);
+  });
+
+  /* ---- 登录提交 ---- */
+  formLogin.addEventListener('submit',function(e){
+    e.preventDefault();
+    clearAllErrors();
+    var email=loginEmail.value.trim();
+    var pw=loginPw.value;
+    var ok=true;
+    if(!emailRe.test(email)){markField(loginEmail);ok=false;}
+    if(!pw){markField(loginPw);ok=false;}
+    if(!ok){return;}
+    var list=getUsers();
+    var user=null;
+    for(var i=0;i<list.length;i++){
+      if(list[i].email===email&&list[i].password===pw){user=list[i];break;}
+    }
+    if(!user){
+      markField(loginPw,'邮箱或密码不正确');
+      return;
+    }
+    if(rememberCheck.checked){
+      localStorage.setItem(SESSION_KEY,email);
+      sessionStorage.removeItem(TMP_KEY);
+    }else{
+      sessionStorage.setItem(TMP_KEY,email);
+      localStorage.removeItem(SESSION_KEY);
+    }
+    formLogin.reset();
+    refreshNav();
+    location.hash='#profile';
+    toast('欢迎回来，'+user.name,true);
+  });
+
+  /* ---- 头像色系 ---- */
+  var AV_GRADIENTS=[
+    ['#8FA8F5','#C4B3F7'],
+    ['#F2B28E','#F5D08A'],
+    ['#7CC9B2','#9CCFE8'],
+    ['#F29AA7','#F5C0A0'],
+    ['#86B8E8','#A8D8C8'],
+    ['#B59FE8','#E8B5D8']
+  ];
+  function avatarIndex(u){
+    if(typeof u.avatar==='number'){return u.avatar % 6;}
+    var s=0;for(var i=0;i<u.name.length;i++){s+=u.name.charCodeAt(i);}
+    return s % 6;
+  }
+  function avatarStyle(u){
+    var g=AV_GRADIENTS[avatarIndex(u)];
+    return 'background:linear-gradient(135deg,'+g[0]+','+g[1]+')';
+  }
+
+  /* ---- 导航登录态 ---- */
+  function refreshNav(){
+    var u=currentUser();
+    if(u){
+      navAuth.style.display='none';
+      navUser.classList.add('in');
+      navName.textContent=u.name;
+      navAvatar.textContent=u.name.charAt(0).toUpperCase();
+      navAvatar.setAttribute('style',avatarStyle(u));
+    }else{
+      navAuth.style.display='';
+      navUser.classList.remove('in');
+      navAvatar.removeAttribute('style');
+    }
+    refreshBadges();
+  }
+  document.getElementById('navLogout').addEventListener('click',function(){
+    localStorage.removeItem(SESSION_KEY);
+    sessionStorage.removeItem(TMP_KEY);
+    if(['#profile','#notifications','#settings'].indexOf(location.hash)>-1){location.hash='#top';}
+    refreshNav();
+    toast('已退出登录');
+  });
+
+  /* ---- 演示入口提示 ---- */
+  document.querySelectorAll('.social-btn').forEach(function(btn){
+    btn.addEventListener('click',function(){toast('第三方登录为演示入口，暂未开通');});
+  });
+  document.getElementById('forgotPw').addEventListener('click',function(e){
+    e.preventDefault();toast('请使用注册邮箱联系管理员重置密码');
+  });
+  document.querySelectorAll('.terms-link').forEach(function(a){
+    a.addEventListener('click',function(e){
+      e.preventDefault();toast('这是演示页面，条款内容待补充');
+    });
+  });
+
+  /* ---- 个人主页：渲染与编辑 ---- */
+  var pAvatar=document.getElementById('pAvatar');
+  var pName=document.getElementById('pName');
+  var pEmail=document.getElementById('pEmail');
+  var pBio=document.getElementById('pBio');
+  var pJoin=document.getElementById('pJoin');
+  var pUid=document.getElementById('pUid');
+  var iName=document.getElementById('iName');
+  var iEmail=document.getElementById('iEmail');
+  var iJoin=document.getElementById('iJoin');
+  var iUid=document.getElementById('iUid');
+  var pHeroView=document.getElementById('pHeroView');
+  var pEdit=document.getElementById('pEdit');
+  var editName=document.getElementById('editName');
+  var editBio=document.getElementById('editBio');
+  var colorPick=document.getElementById('colorPick');
+  var selectedColor=0;
+
+  function fallbackUid(u){
+    var s=0;
+    for(var i=0;i<u.email.length;i++){s+=u.email.charCodeAt(i);}
+    return 'AURA-'+(10000+(s%89999));
+  }
+
+  function renderProfile(){
+    var u=currentUser();
+    if(!u){return;}
+    pName.textContent=u.name;iName.textContent=u.name;
+    pEmail.textContent=u.email;iEmail.textContent=u.email;
+    pBio.textContent=u.bio||'这个人很神秘，还没有留下简介。';
+    var uid=u.uid||fallbackUid(u);
+    pUid.textContent=uid;iUid.textContent=uid;
+    if(u.joinTime&&u.joinTime.length>=7){
+      var jt=u.joinTime.slice(0,4)+' 年 '+u.joinTime.slice(5,7)+' 月';
+      pJoin.textContent=jt;iJoin.textContent=jt;
+    }else{
+      pJoin.textContent='—';iJoin.textContent='—';
+    }
+    var ai=avatarIndex(u);
+    selectedColor=ai;
+    pAvatar.textContent=u.name.charAt(0).toUpperCase();
+    pAvatar.setAttribute('style',avatarStyle(u));
+    editName.value=u.name;
+    editBio.value=u.bio||'';
+    renderColorPick();
+  }
+
+  function renderColorPick(){
+    colorPick.innerHTML='';
+    AV_GRADIENTS.forEach(function(g,i){
+      var dot=document.createElement('i');
+      dot.setAttribute('style','background:linear-gradient(135deg,'+g[0]+','+g[1]+')');
+      if(i===selectedColor){dot.className='sel';}
+      dot.addEventListener('click',function(){
+        selectedColor=i;
+        colorPick.querySelectorAll('i').forEach(function(d){d.classList.remove('sel');});
+        dot.classList.add('sel');
+      });
+      colorPick.appendChild(dot);
+    });
+  }
+
+  function enterEdit(){pHeroView.style.display='none';pEdit.classList.add('on');}
+  function exitEdit(){pHeroView.style.display='flex';pEdit.classList.remove('on');}
+  document.getElementById('editBtn').addEventListener('click',enterEdit);
+  document.getElementById('cancelEdit').addEventListener('click',exitEdit);
+  document.getElementById('saveEdit').addEventListener('click',function(){
+    var n=editName.value.trim();
+    if(n.length<2||n.length>16){toast('昵称需 2-16 个字符');return;}
+    var u=currentUser();
+    var list=getUsers();
+    for(var i=0;i<list.length;i++){
+      if(list[i].email===u.email){
+        list[i].name=n;
+        list[i].bio=editBio.value.trim();
+        list[i].avatar=selectedColor;
+        break;
+      }
+    }
+    saveUsers(list);
+    exitEdit();
+    renderProfile();
+    refreshNav();
+    toast('资料已更新',true);
+  });
+
+  /* 快捷入口 / 作品条目演示提示 */
+  document.querySelectorAll('.qk-row').forEach(function(row){
+    row.addEventListener('click',function(){
+      toast(row.getAttribute('data-qk')+'即将上线，敬请期待');
+    });
+  });
+  document.querySelectorAll('.work').forEach(function(w){
+    w.addEventListener('click',function(){toast('作品详情页为演示内容');});
+  });
+
+  /* 导航头像 / 昵称进入个人主页 */
+  navAvatar.addEventListener('click',function(){location.hash='#profile';});
+  navName.addEventListener('click',function(){location.hash='#profile';});
+
+  /* ---- 初始化 ---- */
+  route();
+  refreshNav();
+})();
+</script>
+</body>
+</html>
